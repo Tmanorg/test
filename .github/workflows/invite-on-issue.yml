@@ -1,11 +1,13 @@
-name: Invite User to Org on Issue Creation
+name: Invite User to Org Only If Issue Labeled 'inhence'
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  invite-user:
+  invite-and-close-inhence:
+    # Only run if issue has label 'inhence'
+    if: contains(github.event.issue.labels.*.name, 'inhence')
     runs-on: ubuntu-latest
     steps:
       - name: Invite Issue Author to Org
@@ -14,7 +16,7 @@ jobs:
           github-token: ${{ secrets.TESTTOKENS }}
           script: |
             const username = context.payload.issue.user.login;
-            const org = 'Tmanorg'; // <-- this is your org name!
+            const org = 'Tmanorg'; // your org name
 
             try {
               // Get user ID from username
@@ -32,3 +34,15 @@ jobs:
                 throw err;
               }
             }
+      - name: Close the issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
+            console.log('Issue closed!');
