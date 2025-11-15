@@ -1,0 +1,34 @@
+name: Invite User to Org on Issue Creation
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  invite-user:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invite Issue Author to Org
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TESTTOKENS }}
+          script: |
+            const username = context.payload.issue.user.login;
+            const org = 'Tmanorg'; // <-- this is your org name!
+
+            try {
+              // Get user ID from username
+              const { data: user } = await github.rest.users.getByUsername({ username });
+              // Invite user to organization
+              await github.request('POST /orgs/{org}/invitations', {
+                org: org,
+                invitee_id: user.id
+              });
+              console.log(`Invited ${username} to ${org}`);
+            } catch (err) {
+              if (err.status === 422) {
+                console.log(`User ${username} is already a member or has a pending invite.`);
+              } else {
+                throw err;
+              }
+            }
