@@ -1,12 +1,11 @@
-name: Welcome to the team accept the invitation 
+name: Welcome to the team accept the invitation
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  invite-and-close-inhence:
-    # Only run if issue has label 'inhence'
+  invite-and-close:
     runs-on: ubuntu-latest
     steps:
       - name: Invite Issue Author to Org
