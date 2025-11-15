@@ -1,4 +1,4 @@
-name: Invite User to Org Only If Issue Labeled 'inhence'
+name: Welcome to the team accept the invitation 
 
 on:
   issues:
