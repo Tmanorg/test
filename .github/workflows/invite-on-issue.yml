@@ -7,7 +7,6 @@ on:
 jobs:
   invite-and-close-inhence:
     # Only run if issue has label 'inhence'
-    if: contains(github.event.issue.labels.*.name, 'inhence')
     runs-on: ubuntu-latest
     steps:
       - name: Invite Issue Author to Org
